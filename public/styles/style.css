@@ -1,0 +1,10 @@
+* { 
+  margin: 0; 
+  position: relative;
+}
+
+html {
+  font-family: 'Questrial', sans-serif;
+}
+
+html, body { height: 100%; }

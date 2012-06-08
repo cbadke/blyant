@@ -1,8 +1,12 @@
+body {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+}
 #playArea {
-  min-width:100%;
   width: 100%;
-  min-height:90%;
-  height: 90%;
+  height: 100%;
+  margin: 0 auto -50px;
 }
 
 #playCanvas {
@@ -13,6 +17,5 @@
 }
 
 #textArea {
-  min-height: 20%;
-  height: 20%;
+  height: 50px;
 }

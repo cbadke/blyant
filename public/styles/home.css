@@ -1,0 +1,40 @@
+body {
+  min-width: 100%;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#button-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  
+  margin-top: -130px;
+  margin-left: -115px;
+}
+
+.nav-button {
+  display: block;
+  width: 200px;
+  height: 100px;
+  margin: 30px;
+
+  border:1px solid #000000;
+  -moz-border-radius: 20px;
+  -webkit-border-radius: 20px;
+  border-radius:20px ;
+  -moz-box-shadow: 5px 5px 5px #000000;
+  -webkit-box-shadow: 5px 5px 5px #000000;
+  box-shadow: 5px 5px 5px #000000;
+  font-size: 3em;
+  color: white;
+}
+
+#play-button {
+  background-color: green;
+}
+
+#watch-button {
+  background-color: blue;
+}
