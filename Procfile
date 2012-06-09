@@ -1,1 +1,1 @@
-web: node app.js
+web: PLATFORM=heroku node app.js
