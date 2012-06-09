@@ -6,6 +6,10 @@ socket.on('guess', function(rawData) {
 
   $('#guesses').html('<ul>'+rawData+'</ul>');
 })
+.on('draw', function(rawData) {
+
+  $('#guesses').html('<ul>'+rawData+'</ul>');
+})
 .on('close', function() {
   console.log('connection closed');
 });

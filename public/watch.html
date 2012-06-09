@@ -6,9 +6,13 @@
   <link href="/styles/watch.css" rel="stylesheet" type="text/css">
 </head>
 <body>
+  <div id='playArea'>
+    <canvas id='playCanvas'>
+      <p>Unfortunately your browser does not support HTML5 canvas. Try again from another browser.</p>
+    </canvas>
+  </div>
   <div id='guessArea'>
-    <ul id="guesses">
-    </ul>
+    <span id="guesses"> </span>
   </div>
 
   <script type="text/javascript" src="/javascript/jquery/jquery.min.js"></script>

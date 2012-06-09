@@ -13,6 +13,12 @@ var playServer = {
         console.log('new guess ' + rawData);
         socket.broadcast.emit('guess', rawData);
       })
+      .on('draw', function(rawData) {
+      
+        console.log('new art ' + rawData);
+      
+        socket.broadcast.emit('draw', rawData);
+      })
       .on('close', function() {
         console.log('connection closed');
       });
