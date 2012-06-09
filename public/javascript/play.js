@@ -1,9 +1,9 @@
-var ws = new WebSocket("ws://" +location.host);
+var socket = io.connect('http://localhost');
 
-  ws.onopen = function () {
-        ws.send(JSON.stringify({type:"login",message:""}));
-          };
+$(document).ready(function() {
 
-  ws.onmessage = function (e) {
-        console.log(e.data);
-          };
+  $('#guess').bind("keyup change paste cut", function(){
+    socket.emit('guess', this.value);
+  });
+
+});

@@ -1,9 +1,11 @@
-var ws = new WebSocket("ws://" +location.host);
 
-  ws.onopen = function () {
-        ws.send(JSON.stringify({type:"login",message:""}));
-          };
+var socket = io.connect('http://localhost');
 
-  ws.onmessage = function (e) {
-        console.log(e.data);
-          };
+socket.on('guess', function(rawData) {
+  console.log('new guess ' + rawData);
+
+  $('#guesses').html('<ul>'+rawData+'</ul>');
+})
+.on('close', function() {
+  console.log('connection closed');
+});
