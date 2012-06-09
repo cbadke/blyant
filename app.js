@@ -10,4 +10,4 @@ var server = connect().use(connect.logger())
                       .use(connect.static(__dirname + '/public'))
                       .listen(process.env.PORT || 8000);
 
-//playServer.start(server);
+playServer.start(server);
