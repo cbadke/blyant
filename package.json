@@ -1,7 +1,7 @@
 { "name" : "guess-a-sketch",
   "version" : "0.0.1",
   "dependencies" : { 
-                    "connect" : "2.x.x",
+                    "connect" : "1.x.x",
                     "socket.io" : "0.x.x" 
                    } 
 }
