@@ -6,6 +6,16 @@ var playServer = {
 
     console.log('Attaching playServer socket....');
     io = io.listen(server);
+  
+    if (process.env.PLATFORM === "heroku") {
+      io.configure(function () { 
+        console.log("forcing long polling...");
+
+          io.set("transports", ["xhr-polling"]); 
+            io.set("polling duration", 10); 
+      });
+    }
+
 
     io.sockets.on('connection', function(socket) {
 
