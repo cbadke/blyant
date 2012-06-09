@@ -1,4 +1,5 @@
 var socket = io.connect('http://localhost');
+var drawCanvas;
 
 $(document).ready(function() {
 
@@ -7,7 +8,7 @@ $(document).ready(function() {
   });
 
 
-  startCanvas('#playCanvas', function() {
-    socket.emit('draw', 'drawing changed ' + (new Date().getTime()));
+  drawCanvas = new DrawCanvas('#playCanvas').onChange(function(canvasData) {
+    socket.emit('draw', canvasData);
   });
 });

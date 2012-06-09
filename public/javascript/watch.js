@@ -1,5 +1,6 @@
 
 var socket = io.connect('http://localhost');
+var display;
 
 socket.on('guess', function(rawData) {
   console.log('new guess ' + rawData);
@@ -7,9 +8,14 @@ socket.on('guess', function(rawData) {
   $('#guesses').html('<ul>'+rawData+'</ul>');
 })
 .on('draw', function(rawData) {
-
-  $('#guesses').html('<ul>'+rawData+'</ul>');
+  if(display) {
+    display.update(rawData);
+  }
 })
 .on('close', function() {
   console.log('connection closed');
+});
+
+$(document).ready(function () {
+  display = new DrawCanvas('#playCanvas').setActive(false);  
 });
