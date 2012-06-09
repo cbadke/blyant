@@ -1,3 +1,7 @@
-{ "name" : "guess-a-sketch"
-, "version" : "0.0.1"
-, "dependencies" : { "connect" : "2.x.x" } }
+{ "name" : "guess-a-sketch",
+  "version" : "0.0.1",
+  "dependencies" : { 
+                    "connect" : "2.x.x",
+                    "websocket.io" : "0.x.x" 
+                   } 
+}
