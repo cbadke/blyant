@@ -4,12 +4,12 @@ var playServer = {
 
   start : function (server) {
 
-    console.log('Attaching playServer socket....');
+    console.log('blyant: Attaching playServer socket....');
     io = io.listen(server);
   
     if (process.env.PLATFORM === "heroku") {
       io.configure(function () { 
-        console.log("forcing long polling...");
+        console.log("blyant: forcing long polling...");
 
           io.set("transports", ["xhr-polling"]); 
             io.set("polling duration", 10); 
@@ -20,17 +20,17 @@ var playServer = {
     io.sockets.on('connection', function(socket) {
 
       socket.on('guess', function(rawData) {
-        console.log('new guess ' + rawData);
+        console.log('blyant: new guess ' + rawData);
         socket.broadcast.emit('guess', rawData);
       })
       .on('draw', function(rawData) {
 
-        console.log('new art ' + rawData);
+        console.log('blyant: new art ' + rawData);
 
         socket.broadcast.emit('draw', rawData);
       })
       .on('close', function() {
-        console.log('connection closed');
+        console.log('blyant: connection closed');
       });
     });
   }
