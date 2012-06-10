@@ -42,6 +42,9 @@ socket.on('guess', function(rawData) {
     display.update(rawData);
   }
 })
+.on('currentPlayer', function (rawData) {
+  $('#playerBanner').html(rawData);
+})
 .on('close', function() {
   console.log('connection closed');
 });

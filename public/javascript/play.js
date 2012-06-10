@@ -1,6 +1,10 @@
 var socket = io.connect('http://localhost');
 socket.emit('player', new Date());
 
+socket.on('currentPlayer', function (rawData) {
+  $('#playerBanner').html(rawData);
+});
+
 var drawCanvas;
 
 $(document).ready(function() {

@@ -19,6 +19,9 @@ var playServer = {
     var commands = [];
     var watchers = [];
     var players = [];
+    var currentPlayer = null;
+    var player1 = null;
+    var player2 = null;
 
     var addWatcher = function (w) {
       watchers.push(w);
@@ -45,6 +48,12 @@ var playServer = {
 
     var addPlayer = function (p, name) {
       players.push( { sock : p, name : name, guess : '' } );
+
+      if (player1 === null) {
+        player1 = p;
+      } else if (player2 === null) {
+        player2 = p;
+      }
     }
 
     var removePlayer = function (p) {
@@ -52,6 +61,20 @@ var playServer = {
       if (pIndex !== -1) {
         players.splice(pIndex, 1);
       }
+    }
+
+    var nextPlayer = function (socket) {
+        
+        if (currentPlayer !== player1) {
+          currentPlayer = player1;
+        } else {
+          currentPlayer = player2;
+        }
+
+        if (currentPlayer !== null) {
+          socket.emit('currentPlayer', players[playerIndexOf(currentPlayer)].name);
+          socket.broadcast.emit('currentPlayer', players[playerIndexOf(currentPlayer)].name);
+        }
     }
 
     io.sockets.on('connection', function(socket) {
@@ -66,6 +89,10 @@ var playServer = {
           watchers.forEach( function(sock) {
             sock.emit('guess', {name : player.name, guess : player.guess});
           });
+
+          if (rawData === 'red') {
+            nextPlayer(socket);
+          }
         }
       })
       .on('draw', function(rawData) {
@@ -88,12 +115,18 @@ var playServer = {
           socket.emit('guess', {name : g.name, guess : g.guess});
         });
 
+        socket.emit('currentPlayer', players[playerIndexOf(currentPlayer)].name);
       })
       .on('player', function(name) {
         console.log('blyant: new player! ' + name);
 
         removeWatcher(socket);
         addPlayer(socket, name);
+
+        if (currentPlayer === null) {
+          nextPlayer(socket);
+        }
+
       })
       .on('close', function() {
         console.log('blyant: connection closed');
