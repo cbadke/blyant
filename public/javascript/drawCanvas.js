@@ -19,7 +19,7 @@ function DrawCanvas( selector ) {
     return null;
   }
   
-  canvas.bind('mousemove', function(ev) {
+  canvas.bind('mousemove touchmove', function(ev) {
     var x, y;
 
     // Get the mouse position relative to the canvas element.
@@ -39,7 +39,7 @@ function DrawCanvas( selector ) {
     }
   });
 
-  canvas.bind('mousedown', function (ev) {
+  canvas.bind('mousedown touchdown', function (ev) {
     if (!drawing && isActive) {
       var x, y;
 
@@ -59,27 +59,26 @@ function DrawCanvas( selector ) {
     }
   });
 
-  canvas.bind('mouseup', function (ev) {
+  canvas.bind('mouseup touchup mouseleave touchleave', function (ev) {
     drawing = false;
   });
 
-  return {
-    update : function (data) {
-      context.moveTo( data.from.x, data.from.y );
-      context.lineTo( data.to.x, data.to.y );
-      context.stroke();
-      return this;
-    },
-    onChange : function (callback) {
-      onchangecallback = callback;
-      return this;
-    },
-    setActive : function (act) {
-      isActive = !!act;
-      return this;
-    }
-  };
+  this.update = function (data) {
+    context.moveTo( data.from.x, data.from.y );
+    context.lineTo( data.to.x, data.to.y );
+    context.stroke();
+    return this;
+  }
 
+  this.onChange = function (callback) {
+    onchangecallback = callback;
+    return this;
+  }
+
+  this.setActive = function (act) {
+    isActive = !!act;
+    return this;
+  }
 }
 
 
