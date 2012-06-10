@@ -17,6 +17,7 @@ var playServer = {
     }
 
     var commands = [];
+    var watchers = [];
 
     io.sockets.on('connection', function(socket) {
 
@@ -26,17 +27,32 @@ var playServer = {
 
       socket.on('guess', function(rawData) {
         console.log('blyant: new guess ' + rawData);
-        socket.broadcast.emit('guess', rawData);
+
+        watchers.forEach( function(sock) {
+          sock.emit('guess', rawData);
+        });
       })
       .on('draw', function(rawData) {
-
         console.log('blyant: new art ' + rawData);
 
         commands.push(rawData);
         socket.broadcast.emit('draw', rawData);
       })
+      .on('watcher', function() {
+        console.log('blyant: new watcher!');
+        watchers.push(socket);
+      })
+      .on('player', function(name) {
+        console.log('blyant: new player! ' + name);
+      })
       .on('close', function() {
         console.log('blyant: connection closed');
+
+        var i = watchers.indexOf(socket);
+        if(i != -1) {
+          console.log('watcher left');
+          sockets.splice(i,1);
+        }
       });
     });
   }

@@ -1,4 +1,6 @@
 var socket = io.connect('http://localhost');
+socket.emit('player', 'samson');
+
 var drawCanvas;
 
 $(document).ready(function() {

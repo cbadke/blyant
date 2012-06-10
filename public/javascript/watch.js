@@ -1,5 +1,7 @@
 
 var socket = io.connect('http://localhost');
+socket.emit('watcher');
+
 var display;
 
 socket.on('guess', function(rawData) {
