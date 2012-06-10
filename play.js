@@ -18,6 +18,32 @@ var playServer = {
 
     var commands = [];
     var watchers = [];
+    var players = [];
+
+    var addWatcher = function (w) {
+      watchers.push(w);
+    }
+
+    var removeWatcher = function (w) {
+        var i = watchers.indexOf(w);
+        if(i != -1) {
+          console.log('watcher left');
+          sockets.splice(i,1);
+       }
+    }
+
+    var addPlayer = function (p, name) {
+        players.push( { sock : p, name : name } );
+    }
+
+    var removePlayer = function (p) {
+        var pIndex = -1;
+        for (player in players) {
+          if (players[player].sock === p) {
+            players.splice(player, 1);
+          }
+        }
+    }
 
     io.sockets.on('connection', function(socket) {
 
@@ -40,19 +66,21 @@ var playServer = {
       })
       .on('watcher', function() {
         console.log('blyant: new watcher!');
-        watchers.push(socket);
+
+        removePlayer(socket);
+        addWatcher(socket);
       })
       .on('player', function(name) {
         console.log('blyant: new player! ' + name);
+
+        removeWatcher(socket);
+        addPlayer(socket, name);
       })
       .on('close', function() {
         console.log('blyant: connection closed');
 
-        var i = watchers.indexOf(socket);
-        if(i != -1) {
-          console.log('watcher left');
-          sockets.splice(i,1);
-        }
+        removeWatcher(socket);
+        removePlayer(socket);
       });
     });
   }
