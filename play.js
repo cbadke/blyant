@@ -25,38 +25,48 @@ var playServer = {
     }
 
     var removeWatcher = function (w) {
-        var i = watchers.indexOf(w);
-        if(i != -1) {
-          console.log('watcher left');
-          sockets.splice(i,1);
-       }
+      var i = watchers.indexOf(w);
+      if(i != -1) {
+        console.log('watcher left');
+        sockets.splice(i,1);
+      }
+    }
+
+    var playerIndexOf = function (p) {
+      var pIndex = -1;
+      for (player in players) {
+        if (players[player].sock === p) {
+          pIndex = player;
+        }
+      }
+
+      return pIndex;
     }
 
     var addPlayer = function (p, name) {
-        players.push( { sock : p, name : name } );
+      players.push( { sock : p, name : name, guess : '' } );
     }
 
     var removePlayer = function (p) {
-        var pIndex = -1;
-        for (player in players) {
-          if (players[player].sock === p) {
-            players.splice(player, 1);
-          }
-        }
+      var pIndex = playerIndexOf(p);
+      if (pIndex !== -1) {
+        players.splice(pIndex, 1);
+      }
     }
 
     io.sockets.on('connection', function(socket) {
-
-      commands.forEach(function (com) {
-        socket.emit('draw', com);
-      });
-
       socket.on('guess', function(rawData) {
         console.log('blyant: new guess ' + rawData);
 
-        watchers.forEach( function(sock) {
-          sock.emit('guess', rawData);
-        });
+        var pIndex = playerIndexOf(socket);
+        if (pIndex !== -1) {
+          var player = players[pIndex];
+          player.guess = rawData;
+
+          watchers.forEach( function(sock) {
+            sock.emit('guess', {name : player.name, guess : player.guess});
+          });
+        }
       })
       .on('draw', function(rawData) {
         console.log('blyant: new art ' + rawData);
@@ -69,6 +79,15 @@ var playServer = {
 
         removePlayer(socket);
         addWatcher(socket);
+
+        commands.forEach(function (com) {
+          socket.emit('draw', com);
+        });
+
+        players.forEach(function (g) {
+          socket.emit('guess', {name : g.name, guess : g.guess});
+        });
+
       })
       .on('player', function(name) {
         console.log('blyant: new player! ' + name);

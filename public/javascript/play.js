@@ -1,5 +1,5 @@
 var socket = io.connect('http://localhost');
-socket.emit('player', 'samson');
+socket.emit('player', new Date());
 
 var drawCanvas;
 
