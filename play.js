@@ -16,8 +16,13 @@ var playServer = {
       });
     }
 
+    var commands = [];
 
     io.sockets.on('connection', function(socket) {
+
+      commands.forEach(function (com) {
+        socket.emit('draw', com);
+      });
 
       socket.on('guess', function(rawData) {
         console.log('blyant: new guess ' + rawData);
@@ -27,6 +32,7 @@ var playServer = {
 
         console.log('blyant: new art ' + rawData);
 
+        commands.push(rawData);
         socket.broadcast.emit('draw', rawData);
       })
       .on('close', function() {
