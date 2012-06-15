@@ -1,4 +1,5 @@
 var io = require('socket.io');
+var game = require('./game');
 
 var playServer = {
 
@@ -16,12 +17,8 @@ var playServer = {
       });
     }
 
-    var commands = [];
     var watchers = [];
-    var players = [];
-    var currentPlayer = null;
-    var player1 = null;
-    var player2 = null;
+    var currentGame = game.create();
 
     var addWatcher = function (w) {
       watchers.push(w);
@@ -35,104 +32,51 @@ var playServer = {
       }
     }
 
-    var playerIndexOf = function (p) {
-      var pIndex = -1;
-      for (player in players) {
-        if (players[player].sock === p) {
-          pIndex = player;
-        }
-      }
-
-      return pIndex;
-    }
-
-    var addPlayer = function (p, name) {
-      players.push( { sock : p, name : name, guess : '' } );
-
-      if (player1 === null) {
-        player1 = p;
-      } else if (player2 === null) {
-        player2 = p;
-      }
-    }
-
-    var removePlayer = function (p) {
-      var pIndex = playerIndexOf(p);
-      if (pIndex !== -1) {
-        players.splice(pIndex, 1);
-      }
-    }
-
-    var nextPlayer = function (socket) {
-        
-        if (currentPlayer !== player1) {
-          currentPlayer = player1;
-        } else {
-          currentPlayer = player2;
-        }
-
-        if (currentPlayer !== null) {
-          socket.emit('currentPlayer', players[playerIndexOf(currentPlayer)].name);
-          socket.broadcast.emit('currentPlayer', players[playerIndexOf(currentPlayer)].name);
-        }
-    }
-
     io.sockets.on('connection', function(socket) {
-      socket.on('guess', function(rawData) {
-        console.log('blyant: new guess ' + rawData);
+        socket.on('guess', function(rawData) {
+          console.log('blyant: new guess ' + rawData);
 
-        var pIndex = playerIndexOf(socket);
-        if (pIndex !== -1) {
-          var player = players[pIndex];
-          player.guess = rawData;
+          currentGame.guess(socket, rawData);
+
+          var player = currentGame.getPlayer(socket);
 
           watchers.forEach( function(sock) {
             sock.emit('guess', {name : player.name, guess : player.guess});
           });
-
-          if (rawData === 'red') {
-            nextPlayer(socket);
-          }
-        }
       })
       .on('draw', function(rawData) {
         console.log('blyant: new art ' + rawData);
 
-        commands.push(rawData);
+        currentGame.draw(rawData);
         socket.broadcast.emit('draw', rawData);
       })
       .on('watcher', function() {
         console.log('blyant: new watcher!');
 
-        removePlayer(socket);
+        currentGame.removePlayer(socket);
         addWatcher(socket);
 
-        commands.forEach(function (com) {
+        currentGame.getCommands().forEach(function (com) {
           socket.emit('draw', com);
         });
 
-        players.forEach(function (g) {
+        currentGame.getPlayers().forEach(function (g) {
           socket.emit('guess', {name : g.name, guess : g.guess});
         });
 
-        socket.emit('currentPlayer', players[playerIndexOf(currentPlayer)].name);
+        socket.emit('currentPlayer', currentGame.getDrawerName());
       })
       .on('player', function(name) {
         console.log('blyant: new player! ' + name);
 
         removeWatcher(socket);
-        addPlayer(socket, name);
-
-        if (currentPlayer === null) {
-          nextPlayer(socket);
-        }
-
+        currentGame.addPlayer(socket, name);
       })
       .on('close', function() {
         console.log('blyant: connection closed');
 
         removeWatcher(socket);
-        removePlayer(socket);
+        currentGame.removePlayer(socket);
       });
     });
   }
